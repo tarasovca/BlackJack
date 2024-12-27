@@ -1,6 +1,6 @@
 let player = {
     name: "Dima",
-    chips: 2000
+    chips: 5000
 }
 
 let cards = []
@@ -19,6 +19,14 @@ let betInput = document.getElementById("bet-input")
 
 playerEl.textContent = player.name + ": $" + player.chips
 
+function resetGameState() {
+    cards = [];
+    sum = 0;
+    hasBlackJack = false;
+    isAlive = false;
+    message = "";
+}
+
 function makeBet() {
     let betAmount = parseInt(betInput.value)
     
@@ -31,13 +39,13 @@ function makeBet() {
         betEl.textContent = "Enter a valid bet amount!"
         return
     }
-    
+
+    resetGameState()
     bet = betAmount
     player.chips -= bet
     playerEl.textContent = player.name + ": $" + player.chips
     betEl.textContent = "Your bet: $" + bet
     isAlive = true 
-    //startGame()
     cardsEl.textContent = "Cards: "
     sumEl.textContent = "Sum: "
 }
@@ -55,21 +63,23 @@ function getRandomCard() {
 
 function startGame() {
     if (bet === 0) {
-        betEl.textContent = "You need to place a bet first!"
-        return
-    }
-    if (cards.length > 0) {
-        messageEl.textContent = "Cards are already dealt. Draw a new card!";
+        betEl.textContent = "You need to place a bet first!";
         return;
     }
-    isAlive = true
-    hasBlackJack = false
-    let firstCard = getRandomCard()
-    let secondCard = getRandomCard()
-    cards = [firstCard, secondCard]
-    sum = firstCard + secondCard
-    renderGame()
+    // Reset game state for a new game
+    resetGameState()
+    isAlive = true;
+   
+
+    // Deal new cards
+    let firstCard = getRandomCard();
+    let secondCard = getRandomCard();
+    cards = [firstCard, secondCard];
+    sum = firstCard + secondCard;
+
+    renderGame();
 }
+
 
 function renderGame() {
     
@@ -102,7 +112,8 @@ function newCard() {
         return;
     }
 
-    if (isAlive === true && hasBlackJack === false) {
+
+    if (isAlive && !hasBlackJack) {
         let card = getRandomCard()
         sum += card
         cards.push(card)
